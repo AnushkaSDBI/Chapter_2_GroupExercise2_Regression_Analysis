@@ -25,25 +25,69 @@ Ames House Prices (Iowa): 1,460 records with 40+ features (physical attributes, 
 
 ## Methodology
 
-**Preprocessing**: Median imputation (numerical), mode imputation (categorical), outlier grouping (rare categories), StandardScaler + MinMaxScaler, LabelEncoder.
+### 1. Preprocessing
+Median imputation (numerical) | Mode imputation (categorical) | Outlier grouping | StandardScaler + MinMaxScaler | LabelEncoder
 
-**Baseline Model**: Linear Regression on 30 RFE-selected features. Test R²: 0.8056, RMSE: $38,648. 5-fold CV: R² = 0.7861 (±0.1425). Good generalization.
+### 2. Baseline Model
+- Linear Regression on 30 RFE-selected features
+- Test R²: 0.8056 | RMSE: $38,648
+- 5-fold CV: R² = 0.7861 (±0.1425)
+- Result: Good generalization, no overfitting
 
-**Feature Selection**: Compared Correlation (15 features, R²=0.7958), Lasso (37 features, R²=0.8095), RFE (30 features, R²=0.8056). Selected RFE for best balance.
+### 3. Feature Selection Comparison
+| Method | Features | Test R² | Selected |
+|--------|----------|---------|----------|
+| Correlation | 15 | 0.7958 | |
+| Lasso | 37 | 0.8095 | |
+| RFE | 30 | 0.8056 | **Best balance** |
 
-**Advanced Models**: Tested Linear, Ridge, Lasso, ElasticNet, Polynomial. Linear Regression performed best (R²=0.8056). Regularization provided minimal improvement.
+### 4. Advanced Models
+| Model | Test R² | Status |
+|-------|---------|--------|
+| Linear Regression | 0.8056 | Best performer |
+| Ridge (α=1) | 0.8035 | Minimal benefit |
+| Lasso (α=1) | 0.7956 | |
+| ElasticNet (α=1) | 0.7877 | |
+| Polynomial (deg=2) | 0.8042 | |
 
-**Hyperparameter Optimization**: GridSearchCV with nested CV. Ridge (α=1, R²=0.8009), Lasso (α=10, R²=0.7842), ElasticNet (α=0.01, R²=0.7920). Simple models with minimal regularization performed best.
+### 5. Hyperparameter Optimization
+GridSearchCV with nested 5-fold CV
+- Ridge: Best α = 1, R² = 0.8009
+- Lasso: Best α = 10, R² = 0.7842
+- ElasticNet: Best α = 0.01, R² = 0.7920
+
+Conclusion: Simple models with minimal regularization perform best
 
 ---
 
 ## Results
 
-Final Model: Linear Regression with 30 RFE-selected features. R²: 0.8009 (80.1% variance), RMSE: $39,075, MAE: $24,530.
+### Final Model Performance
+**Model**: Linear Regression with 30 RFE-selected features
 
-Top Features: OverallQual, GarageCars, TotalBsmtSF, GarageArea, KitchenQual, FullBath, TotRmsAbvGrd, YearBuilt, YearRemodAdd, Fireplaces.
+| Metric | Value |
+|--------|-------|
+| R² Score | 0.8009 (80.1% variance) |
+| RMSE | $39,075 |
+| MAE | $24,530 |
 
-Key Insights: Linear relationships dominate. No overfitting. Good generalization. Regularization unnecessary.
+### Top 10 Most Important Features
+1. OverallQual (overall quality)
+2. GarageCars (garage capacity)
+3. TotalBsmtSF (basement area)
+4. GarageArea (garage size)
+5. KitchenQual (kitchen quality)
+6. FullBath (full bathrooms)
+7. TotRmsAbvGrd (rooms above grade)
+8. YearBuilt (construction year)
+9. YearRemodAdd (remodeling year)
+10. Fireplaces (number of fireplaces)
+
+### Key Insights
+- Linear relationships dominate house pricing
+- No overfitting observed (train/test aligned)
+- Good generalization to unseen data
+- Regularization not needed for this dataset
 
 ---
 
@@ -112,19 +156,30 @@ All dependencies are managed via `uv` and specified in `pyproject.toml`.
 
 ## Conclusions
 
-RECOMMENDED FOR PRODUCTION: Linear Regression with 30 RFE-selected features.
+### Recommended Model
+**Linear Regression with 30 RFE-selected features**
 
-Reasoning: Highest R² (0.8056), excellent generalization (CV R² = 0.7861), simple and interpretable, minimal overfitting, computational efficiency.
+### Why This Model?
+- Highest predictive power (R² = 0.8056)
+- Excellent generalization (CV R² = 0.7861)
+- Simple and interpretable
+- Minimal overfitting risk
+- Computationally efficient
 
-Expected Performance: Explains ~80% of price variance, ~$39,075 average error, suitable for real estate valuation.
+### Expected Real-World Performance
+- Explains approximately 80% of house price variance
+- Average prediction error: ~$39,075
+- Suitable for real estate valuation tasks
 
 ---
 
-## Limitations & Future Work
+## Limitations
 
-Limitations: Outliers retained, linear model may miss non-linearity, temporal/spatial factors not captured.
-
-Future: Ensemble methods, advanced feature engineering, refined outlier treatment, time-based CV, spatial analysis.
+### Current Limitations
+- Some outliers retained (may affect extreme predictions)
+- Linear model may miss complex non-linear interactions
+- Temporal factors (market trends) not captured
+- Geographic location encoded categorically
 
 ---
 
